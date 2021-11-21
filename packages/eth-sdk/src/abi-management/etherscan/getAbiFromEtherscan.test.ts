@@ -6,10 +6,11 @@ import { FetchJson } from '../../peripherals/fetchJson'
 import { Abi } from '../../types'
 import { UserProvidedNetworkSymbol } from '../networks'
 import { EtherscanResponse, getAbiFromEtherscan } from './getAbiFromEtherscan'
+import { UserEtherscanApiKeys, UserEtherscanApiKeysInput } from './urls'
 
 describe(getAbiFromEtherscan.name, () => {
   it('fetches from predefined etherscan URL', async () => {
-    const apiKey = '{{ API_KEY }}'
+    const apiKey: UserEtherscanApiKeysInput = { mainnet: '{{ API_KEY }}'}
     const fetch = mockEndpoint()
     const actual = await getAbiFromEtherscan('mainnet', DAI_ADDRESS, apiKey, {}, fetch)
 
@@ -21,7 +22,7 @@ describe(getAbiFromEtherscan.name, () => {
 
   it('fetches from user-specified URL', async () => {
     const symbol = UserProvidedNetworkSymbol('dethcryptoscan')
-    const apiKey = 'woop'
+    const apiKey: UserEtherscanApiKeysInput = { mainnet: 'woop' }
 
     const userNetworks: UserEtherscanURLs = {
       [symbol]: 'https://dethcryptoscan.test/api/v1',

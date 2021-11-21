@@ -2,7 +2,7 @@ import type { Opaque } from 'ts-essentials'
 import type { ZodTypeDef } from 'zod'
 import { z } from 'zod'
 
-import type { UserEtherscanURLs, UserEtherscanURLsInput } from '../abi-management/etherscan/urls'
+import type { UserEtherscanApiKeys, UserEtherscanApiKeysInput, UserEtherscanURLs, UserEtherscanURLsInput } from '../abi-management/etherscan/urls'
 import { networkIDtoSymbol, NetworkSymbol, symbolToNetworkId } from '../abi-management/networks'
 import { NestedDict } from '../utils/utility-types'
 
@@ -56,6 +56,10 @@ const etherscanURLsSchema: z.ZodSchema<UserEtherscanURLs, ZodTypeDef, UserEthers
   z.string(),
 ) as any
 
+const etherscanApiKeysSchema: z.ZodSchema<UserEtherscanApiKeys, ZodTypeDef, UserEtherscanApiKeysInput> = z.record(
+  z.string(),
+) as any
+
 export type RpcURLs = { [key in NetworkSymbol | (string & {})]?: string }
 
 const rpcUrlsSchema: z.ZodSchema<RpcURLs> = z.record(z.string())
@@ -71,7 +75,9 @@ const ethSdkConfigSchema = z
   .object({
     contracts: ethSdKContractsSchema,
     outputPath: z.string().default(DEFAULT_OUTPUT_PATH),
-    etherscanKey: z.string().default(DEFAULT_ETHERSCAN_KEY),
+    etherscanKeys: etherscanApiKeysSchema.default({
+      mainnet: DEFAULT_ETHERSCAN_KEY
+    }),
     etherscanURLs: etherscanURLsSchema.default({}),
     rpc: rpcUrlsSchema.default({}),
     noFollowProxies: z.boolean().optional(),

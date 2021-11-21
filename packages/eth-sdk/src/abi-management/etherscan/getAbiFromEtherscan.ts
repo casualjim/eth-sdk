@@ -3,12 +3,12 @@ import { FetchJson } from '../../peripherals/fetchJson'
 import type { Abi } from '../../types'
 import type { URLString } from '../../utils/utility-types'
 import { isUserProvidedNetwork, NetworkSymbol, symbolToNetworkId } from '../networks'
-import { networkToEtherscanUrl, UserEtherscanURLs } from './urls'
+import { networkToEtherscanUrl, UserEtherscanApiKeys, UserEtherscanURLs } from './urls'
 
 export async function getAbiFromEtherscan(
   networkSymbol: NetworkSymbol,
   address: Address,
-  apiKey: string,
+  apiKeys: UserEtherscanApiKeys,
   userNetworks: UserEtherscanURLs,
   fetch: FetchJson<EtherscanResponse>,
 ): Promise<Abi> {
@@ -16,8 +16,12 @@ export async function getAbiFromEtherscan(
   if (!apiUrl) {
     throw new Error(`Can't find network info for ${networkSymbol}`)
   }
+  const apiKey = apiKeys[networkSymbol]
 
-  const url = `${apiUrl}?module=contract&action=getabi&address=${address}&apikey=${apiKey}`
+  let url = `${apiUrl}?module=contract&action=getabi&address=${address}`;
+  if (apiKey) {
+    url += `&apikey=${apiKey}`
+  }
   // @todo error handling for incorrect api keys
   const response = await fetch(url)
 
@@ -29,6 +33,7 @@ export async function getAbiFromEtherscan(
 
   return abi
 }
+
 
 function getEtherscanLinkFromNetworkSymbol(
   networkSymbol: NetworkSymbol,

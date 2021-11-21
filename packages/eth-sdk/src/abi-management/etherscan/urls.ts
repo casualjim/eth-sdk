@@ -1,5 +1,5 @@
 import type { URLString } from '../../utils/utility-types'
-import { NetworkID, UserProvidedNetworkSymbol } from '../networks'
+import { NetworkID, NetworkSymbol, UserProvidedNetworkSymbol } from '../networks'
 
 type NetworkId2Etherscan = { [networkID in NetworkID]: URLString }
 
@@ -32,4 +32,6 @@ export const networkToEtherscanUrl: NetworkId2Etherscan = {
 }
 
 export interface UserEtherscanURLs extends Record<UserProvidedNetworkSymbol, URLString> {}
+export interface UserEtherscanApiKeys extends Record<NetworkSymbol, string> {}
 export interface UserEtherscanURLsInput extends Record<string, URLString> {}
+export interface UserEtherscanApiKeysInput extends Record<string, string> {}
